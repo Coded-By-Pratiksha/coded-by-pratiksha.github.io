@@ -24,7 +24,7 @@ navbar-links:
   Resources:
     - Beautiful Jekyll: "https://beautifuljekyll.com"
     - Learn markdown: "https://www.markdowntutorial.com/"
-  Author's home: "https://deanattali.com"
+ [//]: # Author's home: "https://deanattali.com"
 
 ################
 # --- Logo --- #
@@ -51,9 +51,10 @@ round-avatar: true
 # Uncomment the links you want to show and add your information to each one.
 social-network-links:
   email: "pratikshakhese3191@gmail.com"
-  facebook: 
+  facebook: pratiksha.khese.33
   github: coded-by-pratiksha
   linkedin: pratiksha-khese-575a34200
+  instagram: prati_kshakhese
 #  medium: yourname
 #  reddit: yourname or r/yoursubreddit
 #  linkedin: daattali
@@ -90,7 +91,7 @@ rss-description: A technical blog about Salesforce, PD2, and more.
 
 # Select which social network share links to show in posts
 share-links-active:
-  twitter: true
+  twitter: false
   facebook: true
   linkedin: true
   vk: false
