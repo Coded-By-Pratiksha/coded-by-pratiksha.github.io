@@ -2,9 +2,9 @@
 layout: post
 title: "Fixing the 'dispatchEvent' TypeError in Lightning Web Components"
 date: 2025-05-21
-cover-img: /assets/img/path.jpg
-thumbnail-img: /assets/img/thumb.png
-share-img: /assets/img/path.jpg
+cover-img: /assets/img/Dust.jpg
+thumbnail-img: /assets/img/lemon.png
+share-img: /assets/img/Dust.jpg
 categories: [Salesforce, LWC, Debugging]
 tags: [LWC, Salesforce, Error Handling, Lightning Web Security]
 author: Pratiksha
