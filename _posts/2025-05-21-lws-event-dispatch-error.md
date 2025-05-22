@@ -19,6 +19,7 @@ This seemed to happen while my component was trying to trigger or handle a custo
 
 ## 🔍 What This Error Means
 
+
 - This error generally occurs when `dispatchEvent()` is called with something that’s **not an actual `Event` object**.
 - The issue can be caused by:
   - Incorrect use of custom events.
@@ -26,6 +27,7 @@ This seemed to happen while my component was trying to trigger or handle a custo
   - Security layer constraints due to **Lightning Web Security (LWS)**.
 
 ## 💡 My Specific Scenario
+
 
 - I had a custom LWC using `dispatchEvent()` to communicate between components.
 - Everything looked syntactically correct, but I was still seeing the error in the console.
@@ -58,12 +60,13 @@ This immediately resolved the error and allowed the `dispatchEvent()` to work co
 
 If you want to understand what LWS is and why this happens:
 
-- [Lightning Web Security Overview](https://developer.salesforce.com/docs/platform/lightning-components-security/guide/intro.html)
+- [Lightning Web Security Overview](https://developer.salesforce.com/docs/platform/lightning-components-security/guide/get-started-intro.html)
 - [Enable or Disable LWS](https://developer.salesforce.com/docs/platform/lightning-components-security/guide/lws-enable.html)
 
 ---
 
 ## 🧠 Takeaway
+
 
 - When encountering unexpected JavaScript errors in LWC, **always check if LWS is involved**.
 - This error specifically suggests an event compatibility issue — most likely due to **changes introduced by LWS**.
