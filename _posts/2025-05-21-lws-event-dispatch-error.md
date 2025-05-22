@@ -2,17 +2,19 @@
 layout: post
 title: "Fixing the 'dispatchEvent' TypeError in Lightning Web Components"
 date: 2025-05-21
-cover-img: /assets/img/prob-sol.jpg
-thumbnail-img: /assets/img/thumbnail.png
-share-img: /assets/img/prob-sol.jpg
+cover-img: /assets/img/path.jpg
+thumbnail-img: /assets/img/thumb.png
+share-img: /assets/img/path.jpg
 categories: [Salesforce, LWC, Debugging]
 tags: [LWC, Salesforce, Error Handling, Lightning Web Security]
+author: Pratiksha
 ---
 
 While working on a Lightning Web Component (LWC) recently, I encountered an error that was quite confusing at first:
 
+<span style="color:red">
 Error fetching base URL: TypeError: Failed to execute 'dispatchEvent' on 'EventTarget': parameter 1 is not of type 'Event'.
-
+</span>
 
 This issue appeared unexpectedly and blocked some basic event-driven functionality within my component. In this post, I’ll explain the cause of the error and how I resolved it using **Lightning Web Security (LWS)** settings.
 
@@ -37,13 +39,13 @@ The issue was ultimately resolved by enabling the "Enable Lightning Web Security
 
 To enable LWS:
 
-Go to Session Settings in Setup
+Go to **Session Settings** in Setup
 
 Search for "Lightning Web Security" in Salesforce Setup.
 
 Enable the toggle.
 
-![Crepe](https://coded-by-pratiksha.github.io/assets/img/setup_lwsec_enable.avif)
+![lws](https://coded-by-pratiksha.github.io/assets/img/setup_lwsec_enable.avif)
 
 Clear browser cache (just to be safe).
 
@@ -57,6 +59,8 @@ const customEvent = new CustomEvent('someevent', {
 this.dispatchEvent(customEvent);
 
 💡 Key Takeaways
+
+
 Always ensure that you're passing an actual Event or CustomEvent object to dispatchEvent().
 
 Enabling Lightning Web Security (LWS) can help catch improper event handling early.
