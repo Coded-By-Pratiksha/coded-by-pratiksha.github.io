@@ -2,6 +2,9 @@
 layout: post
 title: "Fixing the 'dispatchEvent' TypeError in Lightning Web Components"
 date: 2025-05-21
+cover-img: /assets/img/prob-sol.jpg
+thumbnail-img: /assets/img/thumbnail.png
+share-img: /assets/img/prob-sol.jpg
 categories: [Salesforce, LWC, Debugging]
 tags: [LWC, Salesforce, Error Handling, Lightning Web Security]
 ---
@@ -39,6 +42,8 @@ Go to Session Settings in Setup
 Search for "Lightning Web Security" in Salesforce Setup.
 
 Enable the toggle.
+
+![Crepe](https://coded-by-pratiksha.github.io/assets/img/setup_lwsec_enable.avif)
 
 Clear browser cache (just to be safe).
 
