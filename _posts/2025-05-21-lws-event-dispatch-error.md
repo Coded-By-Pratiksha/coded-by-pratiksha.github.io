@@ -10,74 +10,71 @@ tags: [LWC, Salesforce, Error Handling, Lightning Web Security]
 author: Pratiksha
 ---
 
-While working on a Lightning Web Component (LWC) recently, I encountered an error that was quite confusing at first:
+Recently, while working on a Lightning Web Component (LWC), I encountered the following error in the browser console:
+> **Error fetching base URL: TypeError: Failed to execute 'dispatchEvent' on 'EventTarget': parameter 1 is not of type 'Event'.**
 
-<span style="color:red">
-Error fetching base URL: TypeError: Failed to execute 'dispatchEvent' on 'EventTarget': parameter 1 is not of type 'Event'.
-</span>
-
-This issue appeared unexpectedly and blocked some basic event-driven functionality within my component. In this post, I’ll explain the cause of the error and how I resolved it using **Lightning Web Security (LWS)** settings.
+This seemed to happen while my component was trying to trigger or handle a custom event. If you’re seeing this error too, here's what might be causing it — and how I resolved it using **Lightning Web Security (LWS)** settings.
 
 ---
 
-## 🔍 Root Cause
+## 🔍 What This Error Means
 
-The error points to a misuse of the `dispatchEvent` function — specifically, the parameter passed is **not an instance of `Event`**. In standard JavaScript and the DOM API, `dispatchEvent()` expects a valid `Event` object. For example:
+- This error generally occurs when `dispatchEvent()` is called with something that’s **not an actual `Event` object**.
+- The issue can be caused by:
+  - Incorrect use of custom events.
+  - Mismatch between standard DOM `Event` and custom object/event structure.
+  - Security layer constraints due to **Lightning Web Security (LWS)**.
 
-const myEvent = new CustomEvent('myEventName');
-element.dispatchEvent(myEvent);
-If you mistakenly pass something like a plain object or a string, the browser will throw a TypeError — exactly what happened in this case.
+## 💡 My Specific Scenario
 
-<span style="padding:10px;background-color:#f0f0f0"> 
-🛡️ The Role of Lightning Web Security (LWS)
-</span>
+- I had a custom LWC using `dispatchEvent()` to communicate between components.
+- Everything looked syntactically correct, but I was still seeing the error in the console.
+- On deeper inspection, I found that the **Lightning Web Security (LWS)** setting was **disabled**, and **some standard DOM behavior was restricted**.
 
-Salesforce uses Lightning Web Security (LWS) to sandbox components and enforce better security practices. When LWS is enabled, it enforces stricter type checking than Locker Service used to, and that’s when I saw this error.
+---
 
-LWS does not allow dispatching non-Event objects, so it throws an error even if it seemed to work before under Locker.
+## 🔧 The Fix
 
-<span style="padding:10px;background-color:#f0f0f0"> 
-✅ The Fix
-</span>
+Here’s what solved it for me:
 
+- I explicitly enabled LWS in my org to avoid this issue.
+- To do this:
+  1. Go to your **Salesforce Setup**.
+  2. Search for **“Session Settings”**.
+  3. Scroll down to the **Lightning Web Security** section.
+  4. **Check the setting**:  
+     `Enable Lightning Web Security for Lightning web components`
+     
+     ![lws](https://coded-by-pratiksha.github.io/assets/img/setup_lwsec_enable.avif)
+     
+  6. Save the changes.
+  7. Refresh the app and test again.
 
-The issue was ultimately resolved by enabling the "Enable Lightning Web Security" setting in the org, which aligns behavior with modern DOM APIs and enforces secure coding practices.
+This immediately resolved the error and allowed the `dispatchEvent()` to work correctly.
 
-To enable LWS:
+---
 
-Go to **Session Settings** in Setup
+## 📘 Helpful Salesforce Documentation
 
-Search for "Lightning Web Security" in Salesforce Setup.
+If you want to understand what LWS is and why this happens:
 
-Enable the toggle.
+- [Lightning Web Security Overview](https://developer.salesforce.com/docs/platform/lightning-components-security/guide/intro.html)
+- [Enable or Disable LWS](https://developer.salesforce.com/docs/platform/lightning-components-security/guide/lws-enable.html)
 
-![lws](https://coded-by-pratiksha.github.io/assets/img/setup_lwsec_enable.avif)
+---
 
-Clear browser cache (just to be safe).
+## 🧠 Takeaway
 
-Refresh your components.
+- When encountering unexpected JavaScript errors in LWC, **always check if LWS is involved**.
+- This error specifically suggests an event compatibility issue — most likely due to **changes introduced by LWS**.
+- Enabling LWS is one fix, but be aware of the **security implications** in a production org.
+- Always ensure that you're passing an actual Event or CustomEvent object to dispatchEvent().
 
-Additionally, make sure you're constructing and dispatching events properly in your JavaScript code:
+---
 
-const customEvent = new CustomEvent('someevent', {
-  detail: { data: 'value' }
-});
-this.dispatchEvent(customEvent);
-
-<span style="padding:10px;background-color:#f0f0f0"> 
-💡 Key Takeaways
-</span>
-
-Always ensure that you're passing an actual Event or CustomEvent object to dispatchEvent().
-
-Enabling Lightning Web Security (LWS) can help catch improper event handling early.
-
-LWS aligns your code with standard web practices and ensures more secure component isolation.
-
-Have you faced similar LWC or LWS quirks? Drop a comment or let me know — this blog will continue to share hands-on Salesforce experiences and PD2 preparation notes.
+Have you faced similar LWC or LWS quirks? Drop a comment or let me know — this blog will continue to share hands-on Salesforce experiences, PD2 preparation notes and much more.
 
 Stay tuned! ✨
-
 
 ---
 
