@@ -28,12 +28,18 @@ const myEvent = new CustomEvent('myEventName');
 element.dispatchEvent(myEvent);
 If you mistakenly pass something like a plain object or a string, the browser will throw a TypeError — exactly what happened in this case.
 
+<span style="padding:10px;background-color:#f0f0f0"> 
 🛡️ The Role of Lightning Web Security (LWS)
+</span>
+
 Salesforce uses Lightning Web Security (LWS) to sandbox components and enforce better security practices. When LWS is enabled, it enforces stricter type checking than Locker Service used to, and that’s when I saw this error.
 
 LWS does not allow dispatching non-Event objects, so it throws an error even if it seemed to work before under Locker.
 
+<span style="padding:10px;background-color:#f0f0f0"> 
 ✅ The Fix
+</span>
+
 
 The issue was ultimately resolved by enabling the "Enable Lightning Web Security" setting in the org, which aligns behavior with modern DOM APIs and enforces secure coding practices.
 
@@ -58,8 +64,9 @@ const customEvent = new CustomEvent('someevent', {
 });
 this.dispatchEvent(customEvent);
 
+<span style="padding:10px;background-color:#f0f0f0"> 
 💡 Key Takeaways
-
+</span>
 
 Always ensure that you're passing an actual Event or CustomEvent object to dispatchEvent().
 
