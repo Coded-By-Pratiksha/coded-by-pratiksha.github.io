@@ -80,7 +80,7 @@ If you want to understand what LWS is and why this happens:
 
 ---
 
-Have you faced similar LWC or LWS quirks? Drop a comment or let me know — this blog will continue to share hands-on Salesforce experiences, PD2 preparation notes and much more.
+Have you faced similar LWC or LWS quirks? Drop an Email or let me know — this blog will continue to share hands-on Salesforce experiences, PD2 preparation notes and much more.
 
 Stay tuned! ✨
 
