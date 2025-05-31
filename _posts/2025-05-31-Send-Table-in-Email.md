@@ -33,11 +33,11 @@ When an **Opportunity is marked as Closed Won**, send an email to the Account Ow
 4. Body (HTML format):
 
 ```html
-Hi {{{!Opportunity.Owner.Name}}},
+Hi {!Opportunity.Owner.Name},
 
-Your opportunity {{{Opportunity.Name}}} has been Closed Won. Here are the products associated with it:
+Your opportunity {!Opportunity.Name} has been Closed Won. Here are the products associated with it:
 
-{{{Opportunity.ProductTable__c}}}
+{!Opportunity.ProductTable__c}
 
 Regards,  
 Sales Team
@@ -52,7 +52,7 @@ Sales Team
 
 - **Field Label**: `Product Table`  
 - **API Name**: `ProductTable__c`  
-- **Type**: Long Text Area (32768 characters)  
+- **Type**: Rich Text Area (32768 characters)  
 - Add it to the page layout (optional, for testing/debugging)
 
 ![customField](/assets/img/customField.png)
@@ -181,8 +181,8 @@ Sales Team
 
 | Feature | Approach |
 |--------|----------|
-| Build Dynamic Table | Use Loop + Text Templates in Flow |
-| Store Final HTML | Custom Long Text Area Field |
+| Build Dynamic Table | Use Loop + Text Variable in Flow |
+| Store Final HTML | Custom Rich Text Area Field |
 | Send Email | Use Email Template + Alert or Direct Send Email Action |
 
 This pattern works for any **Parent → Child** relationship, such as:  
