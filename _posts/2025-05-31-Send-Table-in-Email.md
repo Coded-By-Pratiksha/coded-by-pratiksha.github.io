@@ -1,5 +1,14 @@
-
-# Send a Table of Related Records in Email using Flows
+---
+layout: post
+title: "Send a Table of Related Records in Email using Flows"
+date: 2025-05-31
+cover-img: /assets/img/Dust.jpg
+thumbnail-img: assets/img/lemon.jpg
+share-img: /assets/img/Dust.jpg
+categories: [Salesforce, Flows, Email Templates, Automation]
+tags: [Dynamic Email Content, Salesforce, HTML Table in Email, Email Alert]
+author: Pratiksha
+---
 
 Sometimes you need to send an email from Salesforce that includes **a table of related records**, like listing all products in a Closed Won Opportunity. But Lightning Email Templates don’t support looping through child records like `OpportunityLineItems` out-of-the-box.
 
@@ -20,10 +29,13 @@ When an **Opportunity is marked as Closed Won**, send an email to the Account Ow
 1. Go to **Setup → Email Templates → New Email Template**
 2. Name it: `Opportunity Product Table Email`
 3. Subject:
+   
    ```
    Opportunity {!Opportunity.Name} - Product Details
    ```
-4. Body (HTML format):
+   
+5. Body (HTML format):
+
 
 ```html
 Hi {!Opportunity.Owner.Name},
@@ -39,6 +51,7 @@ Sales Team
 > ⚠ The `{!Opportunity.ProductTableHTML__c}` placeholder will be filled using a Flow-generated HTML table stored in a custom Long Text Area field.
 
 ---
+
 
 ### 🛠 Step 2: Create a Custom Field on Opportunity
 
@@ -158,8 +171,6 @@ Use the **"Send Email"** action directly in Flow:
 ## ✅ Output Example
 
 The email will look like:
-
----
 
 **Hi Priya,**
 
