@@ -10,7 +10,6 @@ tags: [Dynamic Email Content, Salesforce, HTML Table in Email, Email Alert]
 author: Pratiksha
 ---
 
-
 Sometimes you need to send an email from Salesforce that includes **a table of related records**, like listing all products in a Closed Won Opportunity. But Lightning Email Templates don’t support looping through child records like `OpportunityLineItems` out-of-the-box.
 
 In this post, you’ll learn how to dynamically build a table of related records and send it via email using **Flows**, **Text Templates**, and optional **Email Alerts**.
@@ -21,7 +20,6 @@ In this post, you’ll learn how to dynamically build a table of related records
 
 When an **Opportunity is marked as Closed Won**, send an email to the Account Owner listing all the products (OpportunityLineItems) added to that opportunity in a clean HTML table format.
 
----
 
 ## 🧰 Step-by-Step Guide
 
@@ -29,38 +27,39 @@ When an **Opportunity is marked as Closed Won**, send an email to the Account Ow
 
 1. Go to **Setup → Email Templates → New Email Template**
 
-2. Name it: `Opportunity Product Table Email`
+2. Name it: `Opportunity Product Details Template`
 
 3. Subject:
-   ```
-   Opportunity {!Opportunity.Name} - Product Details
-   ```
+```
+Opportunity Notification with Product Details
+```
 
-4. Body (HTML format):
+5. Body (HTML format):
 
 ```html
-Hi {!Opportunity.Owner.Name},
+Hi {{{!Opportunity.Owner.Name}}},
 
-Your opportunity {!Opportunity.Name} has been Closed Won. Here are the products associated with it:
+Your opportunity {{{Opportunity.Name}}} has been Closed Won. Here are the products associated with it:
 
-{!Opportunity.ProductTableHTML__c}
+{{{Opportunity.ProductTable__c}}}
 
 Regards,  
 Sales Team
+
 ```
 
-> ⚠ The `{!Opportunity.ProductTableHTML__c}` placeholder will be filled using a Flow-generated HTML table stored in a custom Long Text Area field.
+> ⚠ The `{!Opportunity.ProductTable__c}` placeholder will be filled using a Flow-generated HTML table stored in a custom Rich Text Area field.
 
----
+![EmailTemplate](/assets/img/EmailTemplate.png)
 
 ### 🧱 Step 2: Create a Custom Field on Opportunity
 
-- **Field Label**: `Product Table HTML`  
-- **API Name**: `ProductTableHTML__c`  
+- **Field Label**: `Product Table`  
+- **API Name**: `ProductTable__c`  
 - **Type**: Long Text Area (32768 characters)  
 - Add it to the page layout (optional, for testing/debugging)
 
----
+![customField](/assets/img/customField.png)
 
 ### 🔁 Step 3: Build the Flow to Populate the Table
 
@@ -77,10 +76,11 @@ Sales Team
 - Object: `OpportunityLineItem`  
 - Filter: `OpportunityId = {!$Record.Id}`  
 - Store all records
+- Automatically store all fields
 
-#### 🔹 3. Create Table Header Text Template
+#### 🔹 3. Create Table Content Text Variable
 
-- **Text Template**: `tt_TableHeader`
+- **Text Variable**: `TableContent`
 
 ```html
 <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
@@ -94,53 +94,46 @@ Sales Team
   </thead>
   <tbody>
 ```
+![TableContent](/assets/img/TableContent.png)
 
 #### 🔹 4. Loop Through Products and Append Rows
 
 - Add a **Loop**: `Loop Through Products`  
 - Collection: `Get Opportunity Products`  
-- Loop Variable: `loopProduct`
+- Loop Variable: `Loop_Through_Products`
 
 Inside the loop:
 
-- **Text Template**: `tt_Row`
+- **Assignment**: Assign Table Rows 
+- **Text Variable**: `TableContent` Add below value
 
 ```html
 <tr>
-  <td>{!loopProduct.PricebookEntry.Name}</td>
-  <td>{!loopProduct.Quantity}</td>
-  <td>{!TEXT(loopProduct.UnitPrice)}</td>
-  <td>{!TEXT(loopProduct.TotalPrice)}</td>
+  <td>{!Loop_Through_Products.ProductCode}</td>
+  <td>{!Loop_Through_Products.Quantity}</td>
+  <td>{!Loop_Through_Products.UnitPrice}</td>
+  <td>{!Loop_Through_Products.TotalPrice}</td>
 </tr>
 ```
 
-- **Text Variable**: `varTableRows` (Text, no default value)  
-- **Assignment**: Append each row
+#### 🔹 5. Add Table Footer
 
-```text
-varTableRows = varTableRows + tt_Row
-```
-
-#### 🔹 5. Add Table Footer and Combine All
-
-- **Text Template**: `tt_FinalTable`
+- **Assignment**: `TableContent` Add below value
 
 ```html
-{!tt_TableHeader}
-{!varTableRows}
 </tbody></table>
 ```
 
 #### 🔹 6. Update Opportunity Record
 
 - **Assignment**:  
-  `$Record.ProductTableHTML__c = tt_FinalTable`
+  `$Record.ProductTable__c = TableContent`
 
 - **Update Records**:  
   Record: `$Record`  
-  Fields to update: `ProductTableHTML__c`
+  Fields to update: `ProductTable__c`
 
----
+
 
 ### 📬 Step 4: Send the Email
 
@@ -150,21 +143,23 @@ You have 2 options:
 
 1. Go to **Setup → Email Alerts → New**  
 2. Object: `Opportunity`  
-3. Email Template: `Opportunity Product Table Email`  
+3. Email Template: `Opportunity Product Details Alert`  
 4. Recipient: Opportunity Owner  
 
 Then, add an **Action in Flow**:  
 - **Action Type**: Email Alert  
 - Choose your newly created Email Alert
 
-> ⚠ Make sure the Opportunity record has the `ProductTableHTML__c` field populated **before** the email is sent.
+> ⚠ Make sure the Opportunity record has the `ProductTable__c` field populated **before** the email is sent.
 
 #### 🅱️ Option B: Use Send Email Action in Flow
 
 Use the **"Send Email"** action directly in Flow:  
 - To: `{!$Record.Owner.Email}`  
-- Subject: `"Opportunity {!$Record.Name} - Product Details"`  
-- Body: `{!tt_FinalTable}` (HTML formatted)
+- Subject: `"Opportunity Notification with Product Details"`  
+- Body: `{!ProductTable__c}` (HTML formatted)
+
+![Flow](/assets/img/Flow.png)
 
 ---
 
@@ -172,11 +167,16 @@ Use the **"Send Email"** action directly in Flow:
 
 The email will look like:
 
----
-
-**Hi Priya,**
+**Hi ABC,**
 
 Your opportunity **"Acme Deal"** has been Closed Won. Here are the products associated with it:
+
+| Product Name | Quantity | Unit Price | Total Price |
+| :------ |:--- | :--- | :--- |
+| GC1060 | 1 | 100,000 | 100,000 |
+| GC1020 | 1 | 5,000 | 5,000 |
+| IN7080 | 1 | 85,000 | 5,000 |
+| IN7040 | 1 | 20,000 | 20,000 |
 
 <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
   <thead>
@@ -196,7 +196,6 @@ Your opportunity **"Acme Deal"** has been Closed Won. Here are the products asso
 Regards,  
 Sales Team
 
----
 
 ## 🧠 Summary
 
@@ -212,12 +211,10 @@ This pattern works for any **Parent → Child** relationship, such as:
 - Opportunity → OpportunityLineItems  
 - CustomObject → Related Items
 
----
 
 ### 💡 Bonus Tip
 
 You can even extend this logic to include **totals, discount fields, or hyperlinks** in the table if needed!
 
----
 
-Let me know in the comments if you'd like the Flow screenshots or reusable components!
+Let me know if you face similar requirement and how did you achieve it, Thank You!
