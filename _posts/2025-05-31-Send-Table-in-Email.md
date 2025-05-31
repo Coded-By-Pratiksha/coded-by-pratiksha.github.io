@@ -14,7 +14,6 @@ Sometimes you need to send an email from Salesforce that includes **a table of r
 
 In this post, you’ll learn how to dynamically build a table of related records and send it via email using **Flows**, **Text Templates**, and optional **Email Alerts**.
 
----
 
 ## 🔖 Use Case
 
@@ -29,12 +28,9 @@ When an **Opportunity is marked as Closed Won**, send an email to the Account Ow
 
 2. Name it: `Opportunity Product Details Template`
 
-3. Subject:
-```
-Opportunity Notification with Product Details
-```
+3. Subject: `Opportunity Notification with Product Detail`
 
-5. Body (HTML format):
+4. Body (HTML format):
 
 ```html
 Hi {{{!Opportunity.Owner.Name}}},
@@ -161,7 +157,6 @@ Use the **"Send Email"** action directly in Flow:
 
 ![Flow](/assets/img/Flow.png)
 
----
 
 ## ✔️ Output Example
 
@@ -177,21 +172,6 @@ Your opportunity **"Acme Deal"** has been Closed Won. Here are the products asso
 | GC1020 | 1 | 5,000 | 5,000 |
 | IN7080 | 1 | 85,000 | 5,000 |
 | IN7040 | 1 | 20,000 | 20,000 |
-
-<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
-  <thead>
-    <tr>
-      <th>Product Name</th>
-      <th>Quantity</th>
-      <th>Unit Price</th>
-      <th>Total Price</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>Printer</td><td>2</td><td>₹5000</td><td>₹10000</td></tr>
-    <tr><td>Ink Cartridge</td><td>3</td><td>₹800</td><td>₹2400</td></tr>
-  </tbody>
-</table>
 
 Regards,  
 Sales Team
